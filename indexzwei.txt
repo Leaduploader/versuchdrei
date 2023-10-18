@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dateien zu Trello hochladen</title>
+</head>
+<body>
+    <h1>Dateien zu Trello hochladen</h1>
+    <form id="upload-form">
+        <input type="file" id="file-input" multiple>
+        <button type="submit">Dateien hochladen</button>
+    </form>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const files = document.getElementById('file-input').files;
+            const boardId = '6461f8fd7c4de7fa61bf656a';
+            const apiKey = 'DEIN_TRELLO_API_KEY';
+            const token = 'DEIN_TRELLO_TOKEN';
+
+            if (files.length === 0) {
+                alert('Bitte wähle mindestens eine Datei aus.');
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const formData = new FormData();
+                formData.append('name', file.name);
+                formData.append('file', file);
+
+                const response = await fetch(`https://api.trello.com/1/cards?name=${file.name}&idList=${boardId}&key=${apiKey}&token=${token}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    alert(`Datei ${file.name} erfolgreich hochgeladen!`);
+                } else {
+                    alert(`Fehler beim Hochladen von Datei ${file.name}.`);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
